@@ -110,6 +110,7 @@ function getWeather(location)
     return hs.http.get(weatherEndpoint)
 end
 
+-- get weather and update wather app data
 function weather(location, unitSys)
     local code, body, table = getWeather(location)
     if code ~= 200 then
@@ -133,9 +134,10 @@ local config = readConfig(configFile)
 weatherApp = hs.menubar.new()
 weather(config.location, config.units)
 
+-- refresh on click
+weatherApp:setClickCallback(function () weather('Berlin', 'C') end)
+
 hs.timer.doEvery(config.refresh,
     function ()
         weather(config.location, config.units)
     end)
-
-
