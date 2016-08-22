@@ -134,9 +134,6 @@ local config = readConfig(configFile)
 weatherApp = hs.menubar.new()
 weather(config.location, config.units)
 
--- refresh on click
-weatherApp:setClickCallback(function () weather('Berlin', 'C') end)
-
 hs.timer.doEvery(config.refresh,
     function ()
         weather(config.location, config.units)
