@@ -2,7 +2,7 @@ local json = require("hs-weather.json")
 local home = os.getenv('HOME')
 local hammerDir = (home .. '/.hammerspoon')
 local iconsDir = (hammerDir .. '/hs-weather/icons/')
-local config = (hammerDir .. '/hs-weather/config.json')
+local configFile = (hammerDir .. '/hs-weather/config.json')
 local urlBase = 'https://query.yahooapis.com/v1/public/yql?q='
 local query = 'select item.title, item.condition from weather.forecast where \
                woeid in (select woeid from geo.places(1) where text="'
@@ -128,14 +128,14 @@ function weather(location, unitSys)
     end
 end
 
-weatherApp = hs.menubar.new()
-weather(
-    readConfig(config).location,
-    readConfig(config).units)
+local config = readConfig(configFile)
 
-hs.timer.doEvery(readConfig(config).refresh,
+weatherApp = hs.menubar.new()
+weather(config.location, config.units)
+
+hs.timer.doEvery(config.refresh,
     function ()
-        weather(readConfig(config).location)
+        weather(config.location, config.units)
     end)
 
 
