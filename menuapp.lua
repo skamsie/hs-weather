@@ -68,7 +68,7 @@ function readConfig(file)
     return json:decode(content)
 end
 
-function setIcon(app, code)
+function setWeatherIcon(app, code)
     local iconPath = weatherSymbols[code]
     local size = {w=16,h=16}
     if iconPath ~= nil then
@@ -80,7 +80,7 @@ function setIcon(app, code)
     end
 end
 
-function setTitle(app, unitSys, temp)
+function setWeatherTitle(app, unitSys, temp)
     if unitSys == 'C' then
         local tempCelsius = toCelsius(temp)
         local tempRounded = math.floor(tempCelsius * 10 + 0.5) / 10
@@ -122,8 +122,8 @@ function weather(location, unitSys)
         local code = tonumber(response.query.results.channel.item.condition.code)
         local condition = response.query.results.channel.item.condition.text
         local title = response.query.results.channel.item.title
-        setIcon(weatherApp, code)
-        setTitle(weatherApp, unitSys, temp)
+        setWeatherIcon(weatherApp, code)
+        setWeatherTitle(weatherApp, unitSys, temp)
         weatherApp:setTooltip(
             (title .. '\n' .. 'Condition: ' .. condition))
     end
@@ -133,6 +133,12 @@ local config = readConfig(configFile)
 
 weatherApp = hs.menubar.new()
 weather(config.location, config.units)
+
+-- refresh on click
+weatherApp:setClickCallback(
+    function ()
+        weather(config.location, config.units)
+    end)
 
 hs.timer.doEvery(config.refresh,
     function ()
