@@ -110,37 +110,38 @@ function getWeather(location)
     return hs.http.get(weatherEndpoint)
 end
 
--- get weather and update wather app data
-function weather(location, unitSys)
-    local code, body, table = getWeather(location)
-    if code ~= 200 then
-        print('-- hs-weather: Could not get weather. Response code: ' .. code)
-    else
-        print('-- hs-weather: Weather for ' .. location .. ': ' .. body)
-        local response = json:decode(body)
-        local temp = response.query.results.channel.item.condition.temp
-        local code = tonumber(response.query.results.channel.item.condition.code)
-        local condition = response.query.results.channel.item.condition.text
-        local title = response.query.results.channel.item.title
-        setWeatherIcon(weatherApp, code)
-        setWeatherTitle(weatherApp, unitSys, temp)
-        weatherApp:setTooltip(
-            (title .. '\n' .. 'Condition: ' .. condition))
-    end
+function setWeather(location, unitSys)
+    local weatherEndpoint = (urlBase .. urlencode(query .. location .. '")') .. '&format=json')
+    hs.http.asyncGet(weatherEndpoint, nil, function(code, body, table)
+            if code ~= 200 then
+                print('-- hs-weather: Could not get weather. Response code: ' .. code)
+            else
+                print('-- hs-weather: Weather for ' .. location .. ': ' .. body)
+                local response = json:decode(body)
+                local temp = response.query.results.channel.item.condition.temp
+                local code = tonumber(response.query.results.channel.item.condition.code)
+                local condition = response.query.results.channel.item.condition.text
+                local title = response.query.results.channel.item.title
+                setWeatherIcon(weatherApp, code)
+                setWeatherTitle(weatherApp, unitSys, temp)
+                weatherApp:setTooltip(
+                    (title .. '\n' .. 'Condition: ' .. condition))
+            end
+        end)
 end
 
 local config = readConfig(configFile)
 
 weatherApp = hs.menubar.new()
-weather(config.location, config.units)
+setWeather(config.location, config.units)
 
 -- refresh on click
 weatherApp:setClickCallback(
     function ()
-        weather(config.location, config.units)
+        setWeather(config.location, config.units)
     end)
 
-hs.timer.doEvery(config.refresh,
+w = hs.timer.doEvery(config.refresh,
     function ()
-        weather(config.location, config.units)
+        setWeather(config.location, config.units)
     end)
