@@ -18,5 +18,4 @@ NOTE: click updates weather
 ### Credits
 
 Weather data: [Yahoo Weather API] (https://developer.yahoo.com/weather/). It does not require an api key.  
-The ```json.lua``` file by Jeffrey Friedl http://regex.info/blog/lua/json  
 Icons by RNS, Freepik, Vectors Market, Yannick at http://www.flaticon.com
