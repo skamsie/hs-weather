@@ -1,4 +1,3 @@
-local json = require("hs-weather.json")
 local home = os.getenv('HOME')
 local hammerDir = (home .. '/.hammerspoon')
 local iconsDir = (hammerDir .. '/hs-weather/icons/')
@@ -65,7 +64,7 @@ function readConfig(file)
     local f = io.open(file, "rb")
     local content = f:read("*all")
     f:close()
-    return json:decode(content)
+    return hs.json.decode(content)
 end
 
 function setWeatherIcon(app, code)
@@ -117,7 +116,7 @@ function setWeather(location, unitSys)
                 print('-- hs-weather: Could not get weather. Response code: ' .. code)
             else
                 print('-- hs-weather: Weather for ' .. location .. ': ' .. body)
-                local response = json:decode(body)
+                local response = hs.json.decode(body)
                 local temp = response.query.results.channel.item.condition.temp
                 local code = tonumber(response.query.results.channel.item.condition.code)
                 local condition = response.query.results.channel.item.condition.text
