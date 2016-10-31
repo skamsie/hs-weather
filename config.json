@@ -1,5 +1,6 @@
-{	"geolocation": false,
-	"location": "Berlin, DE",
-	"refresh": 300,
-	"units": "C"
+{	
+  "geolocation": false,
+  "location": "Berlin, DE",
+  "refresh": 300,
+  "units": "C"
 }
