@@ -4,10 +4,11 @@ Weather menubar app for [hammerspoon](http://www.hammerspoon.org) users.
 
 ### Setup
 
-1. Copy the repo to your hammerspoon folder. Must be at ~/.hammerspoon (it is there by default)  
+1. Copy the repo to your hammerspoon folder. 
 ```cp -r hs-weather ~/.hammerspoon```
 2. Add this to your init.lua ```require("hs-weather.menuapp")```
 3. Modify config.json to suit your needs  
+  - ```geolocation: true``` => if hammerspoon has location services enabled, will get weather for current location and the ```location``` parameter will be ignored
 
 Now the weather should be shown in the menu bar. It displays additional info on hover.
 
