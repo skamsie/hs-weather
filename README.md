@@ -10,12 +10,13 @@ Weather menubar app for [hammerspoon](http://www.hammerspoon.org) users.
 3. Modify config.json to suit your needs  
   - ```geolocation: true``` => if hammerspoon has location services enabled, will get weather for current location and the ```location``` parameter will be ignored
 
-Now the weather should be shown in the menu bar. It displays additional info on hover.
+Now the weather should be shown in the menu bar.
 
 [![Screen Shot 2016-08-21 at 2.37.41 PM.png](https://s10.postimg.org/e9djfzq6x/Screen_Shot_2016_08_21_at_2_37_41_PM.png)](https://postimg.org/image/rdj3soi8l/)
 
 **NOTES**
 - click updates weather
+- hover shows last yahoo update for the location
 - if right after opening hammerspoon it shows N/A, just click to retry (this happens because sometimes yahoo returns an empty response for the location)
 
 ### Credits
