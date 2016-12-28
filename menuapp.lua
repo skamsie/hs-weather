@@ -116,15 +116,22 @@ function setWeatherForLocation(location, unitSys)
       else
         print('-- hs-weather: Weather for ' .. location .. ': ' .. body)
         local response = hs.json.decode(body)
-        local temp = response.query.results.channel.item.condition.temp
-        local code = tonumber(response.query.results.channel.item.condition.code)
-        local condition = response.query.results.channel.item.condition.text
-        local title = response.query.results.channel.item.title
-        setWeatherIcon(weatherApp, code)
-        setWeatherTitle(weatherApp, unitSys, temp)
-        weatherApp:setTooltip((title .. '\n' .. 'Condition: ' .. condition))
+        if response.query.results == nil then
+          if weatherApp:title() == '' then
+            setWeatherIcon(weatherApp, 3200)
+          end
+        else
+          local temp = response.query.results.channel.item.condition.temp
+          local code = tonumber(response.query.results.channel.item.condition.code)
+          local condition = response.query.results.channel.item.condition.text
+          local title = response.query.results.channel.item.title
+          setWeatherIcon(weatherApp, code)
+          setWeatherTitle(weatherApp, unitSys, temp)
+          weatherApp:setTooltip((title .. '\n' .. 'Condition: ' .. condition))
+        end
       end
-    end)
+    end
+  )
 end
 
 -- Get weather for current location
