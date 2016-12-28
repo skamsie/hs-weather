@@ -14,7 +14,9 @@ Now the weather should be shown in the menu bar. It displays additional info on 
 
 [![Screen Shot 2016-08-21 at 2.37.41 PM.png](https://s10.postimg.org/e9djfzq6x/Screen_Shot_2016_08_21_at_2_37_41_PM.png)](https://postimg.org/image/rdj3soi8l/)
 
-NOTE: click updates weather
+**NOTES**
+- click updates weather
+- if right after opening hammerspoon it shows N/A, just click to retry (this happens because sometimes yahoo returns an empty response for the location)
 
 ### Credits
 
