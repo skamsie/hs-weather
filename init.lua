@@ -1,3 +1,5 @@
+local m = {}
+
 local hammerDir = hs.fs.currentDir()
 local iconsDir = (hammerDir .. '/hs-weather/icons/')
 local configFile = (hammerDir .. '/hs-weather/config.json')
@@ -7,7 +9,7 @@ local query = 'select item.title, item.condition from weather.forecast where \
 
 -- https://developer.yahoo.com/weather/archive.html#codes
 -- icons by RNS, Freepik, Vectors Market, Yannick at http://www.flaticon.com
-weatherSymbols = {
+local weatherSymbols = {
   [0] = (iconsDir .. 'tornado.png'),      -- tornado
   [1] = (iconsDir .. 'storm.png'),        -- tropical storm
   [2] = (iconsDir .. 'tornado.png'),      -- hurricane
@@ -59,14 +61,17 @@ weatherSymbols = {
   [3200] = (iconsDir .. 'na.png')         -- not available
 }
 
-function readConfig(file)
+local function readConfig(file)
   local f = io.open(file, "rb")
+  if not f then
+    return {}
+  end
   local content = f:read("*all")
   f:close()
   return hs.json.decode(content)
 end
 
-function setWeatherIcon(app, code)
+local function setWeatherIcon(app, code)
   local iconPath = weatherSymbols[code]
   local size = {w=16,h=16}
   if iconPath ~= nil then
@@ -76,7 +81,11 @@ function setWeatherIcon(app, code)
   end
 end
 
-function setWeatherTitle(app, unitSys, temp)
+local function toCelsius(f)
+  return (f - 32) * 5 / 9
+end
+
+local function setWeatherTitle(app, unitSys, temp)
   if unitSys == 'C' then
     local tempCelsius = toCelsius(temp)
     local tempRounded = math.floor(tempCelsius * 10 + 0.5) / 10
@@ -86,7 +95,7 @@ function setWeatherTitle(app, unitSys, temp)
   end
 end
 
-function urlencode(str)
+local function urlencode(str)
   if (str) then
     str = string.gsub (str, "\n", "\r\n")
     str = string.gsub (str, "([^%w ])",
@@ -96,17 +105,13 @@ function urlencode(str)
   return str
 end
 
-function toCelsius(f)
-    return (f - 32) * 5 / 9
-end
-
-function getWeather(location)
+local function getWeather(location)
   local weatherEndpoint = (
     urlBase .. urlencode(query .. location .. '")') .. '&format=json')
   return hs.http.get(weatherEndpoint)
 end
 
-function setWeatherForLocation(location, unitSys)
+local function setWeatherForLocation(location, unitSys)
   local weatherEndpoint = (
     urlBase .. urlencode(query .. location .. '")') .. '&format=json')
   hs.http.asyncGet(weatherEndpoint, nil,
@@ -117,17 +122,17 @@ function setWeatherForLocation(location, unitSys)
         print('-- hs-weather: Weather for ' .. location .. ': ' .. body)
         local response = hs.json.decode(body)
         if response.query.results == nil then
-          if weatherApp:title() == '' then
-            setWeatherIcon(weatherApp, 3200)
+          if m.weatherApp:title() == '' then
+            setWeatherIcon(m.weatherApp, 3200)
           end
         else
           local temp = response.query.results.channel.item.condition.temp
           local code = tonumber(response.query.results.channel.item.condition.code)
           local condition = response.query.results.channel.item.condition.text
           local title = response.query.results.channel.item.title
-          setWeatherIcon(weatherApp, code)
-          setWeatherTitle(weatherApp, unitSys, temp)
-          weatherApp:setTooltip((title .. '\n' .. 'Condition: ' .. condition))
+          setWeatherIcon(m.weatherApp, code)
+          setWeatherTitle(m.weatherApp, unitSys, temp)
+          m.weatherApp:setTooltip((title .. '\n' .. 'Condition: ' .. condition))
         end
       end
     end
@@ -136,8 +141,8 @@ end
 
 -- Get weather for current location
 -- Hammerspoon needs access to OS location services
-function setWeatherForCurrentLocation(unitSys)
-  if hs.location.services_enabled() then
+local function setWeatherForCurrentLocation(unitSys)
+  if hs.location.servicesEnabled() then
     hs.location.start()
     hs.timer.doAfter(1,
       function ()
@@ -151,21 +156,34 @@ function setWeatherForCurrentLocation(unitSys)
   end
 end
 
-function setWeather(conf)
-  if conf.geolocation then
-    setWeatherForCurrentLocation(conf.units)
+local function setWeather()
+  if m.config.geolocation then
+    setWeatherForCurrentLocation(m.config.units)
   else
-    setWeatherForLocation(conf.location, conf.units)
+    setWeatherForLocation(m.config.location, m.config.units)
   end
 end
 
-config = readConfig(configFile)
+m.start = function(cfg)
+  m.config = cfg or readConfig(configFile)
 
-weatherApp = hs.menubar.new()
-setWeather(config)
+  -- defaults if not set
+  m.config.refresh = m.config.refresh or 300
+  m.config.units = m.config.units or 'C'
+  m.config.location = m.config.location or 'Berlin, DE'
 
--- refresh on click
-weatherApp:setClickCallback(function () setWeather(config) end)
+  m.weatherApp = hs.menubar.new()
+  setWeather()
 
-w = hs.timer.doEvery(
-  config.refresh, function () setWeather(config) end)
+  -- refresh on click
+  m.weatherApp:setClickCallback(function () setWeather() end)
+
+  m.timer = hs.timer.doEvery(
+    m.config.refresh, function () setWeather() end)
+end
+
+m.stop = function()
+  m.timer:stop()
+end
+
+return m

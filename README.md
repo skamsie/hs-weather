@@ -6,7 +6,11 @@ Weather menubar app for [hammerspoon](http://www.hammerspoon.org) users.
 
 1. Copy the repo to your hammerspoon folder. 
 ```cp -r hs-weather ~/.hammerspoon```
-2. Add this to your init.lua ```require("hs-weather.menuapp")```
+2. Add this to your init.lua
+```
+local weather = require("hs-weather")
+weather.start()
+```
 3. Modify config.json to suit your needs  
   - ```geolocation: true``` => if hammerspoon has location services enabled, will get weather for current location and the ```location``` parameter will be ignored
 
@@ -18,6 +22,16 @@ Now the weather should be shown in the menu bar.
 - click updates weather
 - hover shows last yahoo update for the location
 - if right after opening hammerspoon it shows N/A, just click to retry (this happens because sometimes yahoo returns an empty response for the location)
+- Config can also be passed as an argument to weather.start() e.g.
+```
+local weather = require("hs-weather")
+weather.start({
+  geolocation = true,
+  units = 'F'
+})
+```
+- Default refresh is 5 minutes
+- Disable by calling ```weather.stop()```
 
 ### Credits
 
