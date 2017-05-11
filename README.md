@@ -35,5 +35,5 @@ weather.start({
 
 ### Credits
 
-Weather data: [Yahoo Weather API] (https://developer.yahoo.com/weather/). It does not require an api key.  
+Weather data: [Yahoo Weather API](https://developer.yahoo.com/weather/). It does not require an api key.  
 Icons by RNS, Freepik, Vectors Market, Yannick at http://www.flaticon.com
