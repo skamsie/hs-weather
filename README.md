@@ -5,7 +5,7 @@ Weather menubar app for [hammerspoon](http://www.hammerspoon.org) users.
 :warning: **DEPRECATED**
 
 _Important EOL Notice: As of Thursday, Jan. 3, 2019, the weather.yahooapis.com and query.yahooapis.com for Yahoo Weather API will be retired.
-To continue using our free Yahoo Weather APIs, use https://weather-ydn-yql.media.yahoo.com/forecastrss. Follow below instructions to get credentials and onboard to this free Yahoo Weather API service._
+To continue using our free Yahoo Weather APIs, use https://weather-ydn-yql.media.yahoo.com/forecastrss._
 
 ### Setup
 
